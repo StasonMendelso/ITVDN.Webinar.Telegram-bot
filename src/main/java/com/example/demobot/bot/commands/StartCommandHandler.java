@@ -1,5 +1,7 @@
 package com.example.demobot.bot.commands;
 
+import static com.example.demobot.bot.constants.Actions.SOME_ACTION;
+
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,10 @@ public class StartCommandHandler extends BotCommand {
               InlineKeyboardButton.builder()
                   .text("I'm a link to youtube channel")
                   .url("https://www.youtube.com/watch?v=lQ-_F2NUAiE&ab_channel=CodeUA")
+                  .build(),
+              InlineKeyboardButton.builder()
+                  .text("I'm a callback button")
+                  .callbackData(SOME_ACTION)
                   .build()
               )
 

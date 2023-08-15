@@ -1,13 +1,18 @@
 package com.example.demobot.bot;
 
+import static com.example.demobot.bot.constants.TextCommands.DEMO_TEXT_COMMANDS;
+
 import com.example.demobot.bot.constants.Actions;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
+import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
@@ -45,7 +50,7 @@ public class MyTelegramBot extends TelegramLongPollingCommandBot {
                 .resizeKeyboard(true)
                 .keyboardRow(new KeyboardRow(
                     List.of(
-                        new KeyboardButton("I'm reply keyboard button")
+                        new KeyboardButton(DEMO_TEXT_COMMANDS)
                     )
                 ))
                 .build();
@@ -65,6 +70,14 @@ public class MyTelegramBot extends TelegramLongPollingCommandBot {
             .build());
       } catch (TelegramApiException e) {
         throw new RuntimeException(e);
+      }
+    }
+    if (update.hasMessage() && update.getMessage().hasText()) {
+      Message message = update.getMessage();
+      String text = message.getText();
+      IBotCommand command = getRegisteredCommand(text);
+      if (!Objects.isNull(command)) {
+        command.processMessage(this, message, new String[]{});
       }
     }
   }

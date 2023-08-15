@@ -20,23 +20,35 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class StartCommandHandler extends BotCommand {
 
-  public StartCommandHandler(@Value("start")String commandIdentifier, @Value("")String description) {
+  private final String startSecret;
+
+  public StartCommandHandler(@Value("start") String commandIdentifier,
+      @Value("") String description,
+      @Value("${bot.start-secret}") String startSecret) {
     super(commandIdentifier, description);
+    this.startSecret = startSecret;
   }
 
   @Override
   public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
+    if (strings.length == 0) {
+      return;
+    }
+    String secret = strings[0];
+    if (!startSecret.equals(secret)) {
+      return;
+    }
     try {
       InlineKeyboardMarkup inlineKeyboardMarkup = InlineKeyboardMarkup.builder()
           .keyboardRow(List.of(
-              InlineKeyboardButton.builder()
-                  .text("I'm a link to youtube channel")
-                  .url("https://www.youtube.com/watch?v=lQ-_F2NUAiE&ab_channel=CodeUA")
-                  .build(),
-              InlineKeyboardButton.builder()
-                  .text("I'm a callback button")
-                  .callbackData(SOME_ACTION)
-                  .build()
+                  InlineKeyboardButton.builder()
+                      .text("I'm a link to youtube channel")
+                      .url("https://www.youtube.com/watch?v=lQ-_F2NUAiE&ab_channel=CodeUA")
+                      .build(),
+                  InlineKeyboardButton.builder()
+                      .text("I'm a callback button")
+                      .callbackData(SOME_ACTION)
+                      .build()
               )
 
           )
